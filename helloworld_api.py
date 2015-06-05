@@ -17,7 +17,12 @@ REQUEST_CONTAINER = endpoints.ResourceContainer(
     message_types.VoidMessage,
     name=messages.StringField(1),
 )
-
+REQUEST__GREET_CONTAINER = endpoints.ResourceContainer(
+    message_types.VoidMessage,
+    name=messages.StringField(1),
+    peroid=messages.StringField(2),
+)
+    
 
 package = 'Hello'
 
@@ -25,7 +30,7 @@ package = 'Hello'
 class Hello(messages.Message):
     """String that stores a message."""
     greeting = messages.StringField(1)
-
+   
 
 @endpoints.api(name='helloworldendpoints', version='v1')
 class HelloWorldApi(remote.Service):
@@ -42,5 +47,10 @@ class HelloWorldApi(remote.Service):
       greet = "Hello {}".format(request.name)
       return Hello(greeting=greet)
 
+    @endpoints.method(REQUEST__GREET_CONTAINER, Hello,
+      path = "greetByPeroid", http_method='GET', name = "greetByPeroid")
+    def greet_by_peroid(self, request):
+      greet = "Good {} {}".format(request.peroid, request.name)
+      return Hello(greeting=greet)
 
 APPLICATION = endpoints.api_server([HelloWorldApi])
